@@ -60,9 +60,8 @@ The website is organized into the following main pages:
 
 ## Author
 
-This RETRO GAMES website was developed by \[Your Name/Username Here].
+This RETRO GAMES website was developed by Christopher A. Lee.
 
-*(Optional: Add an acknowledgment if you wish)*
 The game implementations were developed with the assistance of Google's Gemini AI for code generation, logic refinement, and debugging.
 
 ## Future Enhancements (Potential Ideas)
