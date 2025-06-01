@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAMES - Our Collection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 5em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            font-size: 1.5em;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #CCCCCC;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+        }
+
+        section {
+            background-color: #F8F8F8;
+            border: 1px solid #DDDDDD;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        section:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.75em;
+            color: #000000;
+            border-bottom: 2px solid #EEEEEE;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #666666;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #000000;
+        }
+
+        #games-grid-container {
+            display: flex;
+            justify-content: center;
+            padding-top: 20px;
+        }
+
+        #games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            max-width: 800px;
+            gap: 20px;
+        }
+
+        .game-block {
+            background-color: #F0F0F0;
+            border: 1px solid #CCCCCC;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000000;
+        }
+
+        .game-block:hover {
+            background-color: #E0E0E0;
+            border-color: #A0A0A0;
+        }
+
+        .game-block h3 {
+            margin: 0;
+            color: #000000;
+            font-size: 1.5em;
+        }
+
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RETRO GAMES</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Games</a></li>
+                <li><a href="leaderboards.html">Leaderboards</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="games">
+            <h2>Our Game Collection</h2>
+            <p>Explore our exciting collection of games here!</p>
+            <div id="games-grid-container">
+                <div id="games-grid">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Get in Touch</h2>
+            <p>Have questions about a game or want to suggest a new title? We'd love to hear from you!</p>
+            <p>Email: <a href="mailto:info@retrogames.com">info@retrogames.com</a></p>
+            <p>Follow us for updates on new additions and features.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RETRO GAMES. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const games = [
+            {
+                name: "Space Invaders",
+                link: "space-invaders.html"
+            },
+            {
+                name: "TRON",
+                link: "tron.html"
+            },
+            {
+                name: "Pac-Man",
+                link: "pac-man.html"
+            },
+            {
+                name: "Tetris",
+                link: "tetris.html"
+            },
+            {
+                name: "Asteroids",
+                link: "asteroids.html"
+            },
+            {
+                name: "Pong",
+                link: "pong.html"
+            },
+            {
+                name: "Breakout",
+                link: "breakout.html"
+            },
+            {
+                name: "Frogger",
+                link: "frogger.html"
+            },
+            {
+                name: "Combat",
+                link: "combat.html"
+            }
+        ];
+
+        const gamesGrid = document.getElementById('games-grid');
+
+        games.forEach(game => {
+            const gameBlock = document.createElement('a');
+            gameBlock.classList.add('game-block');
+            gameBlock.href = game.link;
+
+            const gameName = document.createElement('h3');
+            gameName.textContent = game.name;
+
+            gameBlock.appendChild(gameName);
+            gamesGrid.appendChild(gameBlock);
+        });
+    </script>
+
+</body>
+</html>

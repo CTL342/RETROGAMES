@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAMES - Tank Battle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 5em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            font-size: 1.5em;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #CCCCCC;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            text-align: center; 
+        }
+
+        section {
+            background-color: #F8F8F8;
+            border: 1px solid #DDDDDD;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #000000;
+            border-bottom: 2px solid #EEEEEE;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .game-area {
+            background-color: #202020; /* Darker background for contrast */
+            border: 5px solid #333333;
+            width: 600px; 
+            height: 500px; 
+            margin: 20px auto; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        #start-message {
+            cursor: pointer;
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            border: 2px solid #FFFFFF; 
+            color: #FFFFFF; 
+            font-size: 1.5em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; 
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+            line-height: 1.5;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+
+        #game-content { 
+            display: none; 
+            width: 100%;
+            height: 100%;
+        }
+
+        #gameCanvas {
+            background-color: #101010; /* Game background color */
+            display: block; 
+        }
+
+        .directions-box {
+            background-color: #F0F0F0;
+            border: 1px solid #BBBBBB;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .directions-box h3 {
+            color: #000000;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .directions-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .directions-box li {
+            margin-bottom: 8px;
+        }
+      
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>RETRO GAMES</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Games</a></li>
+                <li><a href="leaderboards.html">Leaderboards</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="tank-battle-game"> 
+            <h2>Tank Battle</h2> 
+            <div class="game-container">
+                <div class="game-area"> 
+                    <div id="start-message">CLICK TO START</div>
+                    <div id="game-content">
+                        <canvas id="gameCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="directions-box">
+                <h3>How to Play (2 Players):</h3>
+                <ul>
+                    <li><strong>Player 1 (Green Tank):</strong>
+                        <ul>
+                            <li><strong>W:</strong> Move Forward</li>
+                            <li><strong>S:</strong> Move Backward</li>
+                            <li><strong>A:</strong> Rotate Left</li>
+                            <li><strong>D:</strong> Rotate Right</li>
+                            <li><strong>Spacebar:</strong> Fire</li>
+                        </ul>
+                    </li>
+                    <li><strong>Player 2 (Blue Tank):</strong>
+                        <ul>
+                            <li><strong>Arrow Up:</strong> Move Forward</li>
+                            <li><strong>Arrow Down:</strong> Move Backward</li>
+                            <li><strong>Arrow Left:</strong> Rotate Left</li>
+                            <li><strong>Arrow Right:</strong> Rotate Right</li>
+                            <li><strong>Enter:</strong> Fire</li>
+                        </ul>
+                    </li>
+                    <li>Hit your opponent's tank to score a point.</li>
+                    <li>Bullets disappear if they hit a wall.</li>
+                    <li>First player to reach 5 points wins!</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RETRO GAMES. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const startMessageEl = document.getElementById('start-message');
+        const gameContentEl = document.getElementById('game-content');
+        const canvasEl = document.getElementById('gameCanvas');
+        const ctxEl = canvasEl.getContext('2d');
+        
+        // Game constants
+        const TANK_WIDTH = 30;
+        const TANK_HEIGHT = 30;
+        const TANK_SPEED = 2;
+        const TANK_ROTATE_SPEED = 0.05; // Radians per frame
+        const BULLET_SPEED = 5;
+        const BULLET_RADIUS = 4;
+        const BULLET_COOLDOWN = 500; // Milliseconds
+        const WALL_COLOR = '#888888';
+        const WINNING_SCORE = 5;
+
+        let player1Tank, player2Tank;
+        let bullets = [];
+        let walls = [];
+        let gameRunning = false;
+        let keys = {}; // For handling multiple key presses
+
+        canvasEl.width = 600;
+        canvasEl.height = 500;
+
+        class Tank {
+            constructor(x, y, angle, color, controls, isPlayer2 = false) {
+                this.x = x;
+                this.y = y;
+                this.width = TANK_WIDTH;
+                this.height = TANK_HEIGHT;
+                this.angle = angle; // Radians
+                this.color = color;
+                this.turretColor = isPlayer2 ? '#6666FF' : '#66FF66'; // Lighter shade for turret
+                this.speed = TANK_SPEED;
+                this.rotateSpeed = TANK_ROTATE_SPEED;
+                this.score = 0;
+                this.controls = controls; // {up, down, left, right, fire}
+                this.lastShotTime = 0;
+                this.isPlayer2 = isPlayer2;
+            }
+
+            draw() {
+                ctxEl.save();
+                ctxEl.translate(this.x + this.width / 2, this.y + this.height / 2);
+                ctxEl.rotate(this.angle);
+
+                // Tank Body
+                ctxEl.fillStyle = this.color;
+                ctxEl.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                
+                // Turret Base (optional circle)
+                ctxEl.fillStyle = this.turretColor;
+                ctxEl.beginPath();
+                ctxEl.arc(0, 0, this.width / 4, 0, Math.PI * 2);
+                ctxEl.fill();
+
+                // Turret Barrel
+                ctxEl.fillStyle = this.turretColor;
+                ctxEl.fillRect(0, -this.height / 8, this.width * 0.7, this.height / 4);
+                
+                ctxEl.restore();
+            }
+
+            move(direction) { // direction: 1 for forward, -1 for backward
+                const moveX = Math.cos(this.angle) * this.speed * direction;
+                const moveY = Math.sin(this.angle) * this.speed * direction;
+
+                const nextX = this.x + moveX;
+                const nextY = this.y + moveY;
+
+                // Basic boundary collision
+                if (nextX >= 0 && nextX + this.width <= canvasEl.width &&
+                    nextY >= 0 && nextY + this.height <= canvasEl.height) {
+                    
+                    // Wall collision (simple AABB check for tank vs wall)
+                    let canMove = true;
+                    const tempTankRect = {x: nextX, y: nextY, width: this.width, height: this.height};
+                    for (const wall of walls) {
+                        if (rectIntersect(tempTankRect, wall)) {
+                            canMove = false;
+                            break;
+                        }
+                    }
+                    if (canMove) {
+                        this.x = nextX;
+                        this.y = nextY;
+                    }
+                }
+            }
+
+            rotate(direction) { // direction: 1 for clockwise, -1 for counter-clockwise
+                this.angle += this.rotateSpeed * direction;
+            }
+
+            shoot() {
+                const currentTime = Date.now();
+                if (currentTime - this.lastShotTime > BULLET_COOLDOWN) {
+                    // Calculate bullet start position from turret tip
+                    const turretLength = this.width * 0.7;
+                    const bulletStartX = this.x + this.width / 2 + Math.cos(this.angle) * turretLength;
+                    const bulletStartY = this.y + this.height / 2 + Math.sin(this.angle) * turretLength;
+                    
+                    bullets.push(new Bullet(bulletStartX, bulletStartY, this.angle, this));
+                    this.lastShotTime = currentTime;
+                }
+            }
+
+            respawn() {
+                if (this.isPlayer2) {
+                    this.x = canvasEl.width - this.width - 50;
+                    this.y = canvasEl.height - this.height - 50;
+                    this.angle = Math.PI; // Facing left
+                } else {
+                    this.x = 50;
+                    this.y = 50;
+                    this.angle = 0; // Facing right
+                }
+            }
+        }
+
+        class Bullet {
+            constructor(x, y, angle, owner) {
+                this.x = x;
+                this.y = y;
+                this.radius = BULLET_RADIUS;
+                this.angle = angle;
+                this.speed = BULLET_SPEED;
+                this.dx = Math.cos(angle) * this.speed;
+                this.dy = Math.sin(angle) * this.speed;
+                this.owner = owner; // The tank that fired this bullet
+                this.color = owner.turretColor;
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+
+            draw() {
+                ctxEl.beginPath();
+                ctxEl.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctxEl.fillStyle = this.color;
+                ctxEl.fill();
+                ctxEl.closePath();
+            }
+        }
+
+        function createWalls() {
+            walls = [];
+            // Border walls (implicit via canvas boundaries)
+            // Example maze walls
+            walls.push({x: 100, y: 100, width: 20, height: 300, color: WALL_COLOR});
+            walls.push({x: canvasEl.width - 120, y: 100, width: 20, height: 300, color: WALL_COLOR});
+            walls.push({x: 200, y: canvasEl.height / 2 - 10, width: canvasEl.width - 400, height: 20, color: WALL_COLOR});
+        }
+        
+        function drawWalls() {
+            walls.forEach(wall => {
+                ctxEl.fillStyle = wall.color;
+                ctxEl.fillRect(wall.x, wall.y, wall.width, wall.height);
+            });
+        }
+
+        function drawScores() {
+            ctxEl.fillStyle = 'white';
+            ctxEl.font = '24px "Press Start 2P"';
+            ctxEl.textAlign = 'center';
+            
+            ctxEl.fillStyle = player1Tank.color;
+            ctxEl.fillText(`${player1Tank.score}`, canvasEl.width / 4, 40);
+            
+            ctxEl.fillStyle = player2Tank.color;
+            ctxEl.fillText(`${player2Tank.score}`, canvasEl.width * 3 / 4, 40);
+        }
+
+        // Simple AABB collision check
+        function rectIntersect(r1, r2) {
+            return !(r2.x > r1.x + r1.width || 
+                     r2.x + r2.width < r1.x || 
+                     r2.y > r1.y + r1.height ||
+                     r2.y + r2.height < r1.y);
+        }
+
+        function checkCollisions() {
+            // Bullets
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const bullet = bullets[i];
+                let hit = false;
+
+                // Bullet vs Walls
+                for (const wall of walls) {
+                    // Simple bounding box for bullet for wall collision
+                    const bulletRect = {x: bullet.x - bullet.radius, y: bullet.y - bullet.radius, width: bullet.radius*2, height: bullet.radius*2};
+                    if (rectIntersect(bulletRect, wall)) {
+                        bullets.splice(i, 1);
+                        hit = true;
+                        break;
+                    }
+                }
+                if (hit) continue;
+
+                // Bullet vs Tanks
+                const tanks = [player1Tank, player2Tank];
+                for (const tank of tanks) {
+                    if (bullet.owner !== tank) { // Can't shoot self
+                         // AABB check for bullet vs tank
+                        const tankRect = {x: tank.x, y: tank.y, width: tank.width, height: tank.height};
+                        const bulletRect = {x: bullet.x - bullet.radius, y: bullet.y - bullet.radius, width: bullet.radius*2, height: bullet.radius*2};
+                        if (rectIntersect(bulletRect, tankRect)) {
+                            bullet.owner.score++;
+                            tank.respawn(); // Respawn hit tank
+                            bullets.splice(i, 1);
+                            hit = true;
+                            if (bullet.owner.score >= WINNING_SCORE) {
+                                gameOver(`${bullet.owner === player1Tank ? "Player 1" : "Player 2"} Wins!`);
+                            }
+                            break; 
+                        }
+                    }
+                }
+                if (hit) continue;
+
+                // Bullet vs Screen Edges
+                if (bullet.x - bullet.radius < 0 || bullet.x + bullet.radius > canvasEl.width ||
+                    bullet.y - bullet.radius < 0 || bullet.y + bullet.radius > canvasEl.height) {
+                    bullets.splice(i, 1);
+                }
+            }
+        }
+
+        function drawGame() {
+            ctxEl.fillStyle = '#101010'; // Background
+            ctxEl.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            
+            drawWalls();
+            if (player1Tank) player1Tank.draw();
+            if (player2Tank) player2Tank.draw();
+            bullets.forEach(bullet => bullet.draw());
+            drawScores();
+        }
+        
+        function handlePlayerInput() {
+            if (!gameRunning) return;
+
+            // Player 1
+            if (keys[player1Tank.controls.up]) player1Tank.move(1);
+            if (keys[player1Tank.controls.down]) player1Tank.move(-1);
+            if (keys[player1Tank.controls.left]) player1Tank.rotate(-1);
+            if (keys[player1Tank.controls.right]) player1Tank.rotate(1);
+            if (keys[player1Tank.controls.fire]) player1Tank.shoot();
+
+            // Player 2
+            if (keys[player2Tank.controls.up]) player2Tank.move(1);
+            if (keys[player2Tank.controls.down]) player2Tank.move(-1);
+            if (keys[player2Tank.controls.left]) player2Tank.rotate(-1);
+            if (keys[player2Tank.controls.right]) player2Tank.rotate(1);
+            if (keys[player2Tank.controls.fire]) player2Tank.shoot();
+        }
+        
+        function handleKeyDown(e) {
+            keys[e.key.toLowerCase()] = true;
+            // Prevent default for game control keys
+             const gameKeys = ['w', 'a', 's', 'd', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'enter'];
+            if (gameKeys.includes(e.key.toLowerCase())) {
+                e.preventDefault();
+            }
+        }
+        function handleKeyUp(e) {
+            keys[e.key.toLowerCase()] = false;
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+            handlePlayerInput(); // Process input for movement/shooting
+            // No need to call tank.update() if movement is handled by handlePlayerInput directly
+            bullets.forEach(bullet => bullet.update());
+            checkCollisions();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            updateGame();
+            drawGame();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver(message) {
+            gameRunning = false;
+            startMessageEl.innerHTML = `${message}<br>P1: ${player1Tank.score} - P2: ${player2Tank.score}<br><small>CLICK TO RESTART</small>`;
+            startMessageEl.style.display = 'block';
+            gameContentEl.style.display = 'none';
+        }
+        
+        let gameLoopRequestID;
+
+        function startGame() {
+            if (gameLoopRequestID) cancelAnimationFrame(gameLoopRequestID);
+            
+            player1Tank = new Tank(50, 50, 0, 'green', {up: 'w', down: 's', left: 'a', right: 'd', fire: ' '});
+            player2Tank = new Tank(canvasEl.width - TANK_WIDTH - 50, canvasEl.height - TANK_HEIGHT - 50, Math.PI, 'blue', 
+                                   {up: 'arrowup', down: 'arrowdown', left: 'arrowleft', right: 'arrowright', fire: 'enter'}, true);
+            bullets = [];
+            createWalls();
+            
+            gameRunning = true;
+            startMessageEl.style.display = 'none';
+            gameContentEl.style.display = 'block';
+            canvasEl.focus(); 
+
+            keys = {}; 
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            
+            gameLoopRequestID = requestAnimationFrame(gameLoop);
+        }
+
+        startMessageEl.addEventListener('click', startGame);
+        
+        const gameAreaEl = document.querySelector('.game-area'); 
+        gameAreaEl.style.width = `${canvasEl.width}px`;
+        gameAreaEl.style.height = `${canvasEl.height}px`;
+
+    </script>
+
+</body>
+</html>

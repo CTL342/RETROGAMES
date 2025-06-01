@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAMES - Pong</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 5em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            font-size: 1.5em;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #CCCCCC;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            text-align: center; 
+        }
+
+        section {
+            background-color: #F8F8F8;
+            border: 1px solid #DDDDDD;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #000000;
+            border-bottom: 2px solid #EEEEEE;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .game-area {
+            background-color: #000000; 
+            border: 5px solid #333333;
+            width: 700px; 
+            height: 500px;
+            margin: 20px auto; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        #start-message {
+            cursor: pointer;
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            border: 2px solid #FFFFFF; 
+            color: #FFFFFF; 
+            font-size: 1.5em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; 
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+
+        #game-content { 
+            display: none; 
+        }
+
+        #gameCanvas {
+            background-color: #000000; 
+            display: block; 
+        }
+
+        .directions-box {
+            background-color: #F0F0F0;
+            border: 1px solid #BBBBBB;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .directions-box h3 {
+            color: #000000;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .directions-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .directions-box li {
+            margin-bottom: 8px;
+        }
+      
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>RETRO GAMES</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Games</a></li>
+                <li><a href="leaderboards.html">Leaderboards</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="pong-game">
+            <h2>Pong</h2>
+            <div class="game-container">
+                <div class="game-area" id="game-area-container">
+                    <div id="start-message">CLICK TO START</div>
+                    <div id="game-content">
+                        <canvas id="gameCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="directions-box">
+                <h3>How to Play (2 Player):</h3>
+                <ul>
+                    <li><strong>Player 1 (Left Paddle):</strong>
+                        <ul>
+                            <li><strong>'W' Key:</strong> Move Up</li>
+                            <li><strong>'S' Key:</strong> Move Down</li>
+                        </ul>
+                    </li>
+                    <li><strong>Player 2 (Right Paddle):</strong>
+                        <ul>
+                            <li><strong>Arrow Up Key:</strong> Move Up</li>
+                            <li><strong>Arrow Down Key:</strong> Move Down</li>
+                        </ul>
+                    </li>
+                    <li>Hit the ball with your paddle.</li>
+                    <li>Score a point if your opponent misses the ball.</li>
+                    <li>First player to reach 5 points wins!</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RETRO GAMES. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const startMessageEl = document.getElementById('start-message');
+        const gameContentEl = document.getElementById('game-content');
+        const gameAreaContainerEl = document.getElementById('game-area-container'); 
+        const canvasEl = document.getElementById('gameCanvas');
+        const ctxEl = canvasEl.getContext('2d');
+
+        // Game constants
+        const PADDLE_WIDTH = 10;
+        const PADDLE_HEIGHT = 80;
+        const PADDLE_SPEED = 6;
+        const BALL_RADIUS = 7;
+        const INITIAL_BALL_SPEED_X = 4;
+        const INITIAL_BALL_SPEED_Y = 4;
+        const WINNING_SCORE = 5;
+
+        let player1, player2, ball;
+        let gameRunning = false;
+        let keys = {}; // To handle simultaneous key presses
+
+        // Set canvas dimensions
+        canvasEl.width = 600;
+        canvasEl.height = 400;
+
+        class Paddle {
+            constructor(x, isPlayerTwo = false) {
+                this.x = x;
+                this.y = canvasEl.height / 2 - PADDLE_HEIGHT / 2;
+                this.width = PADDLE_WIDTH;
+                this.height = PADDLE_HEIGHT;
+                this.speed = PADDLE_SPEED;
+                this.score = 0;
+                this.isPlayerTwo = isPlayerTwo;
+            }
+
+            update() {
+                if (this.isPlayerTwo) {
+                    if (keys['arrowup']) this.y -= this.speed;
+                    if (keys['arrowdown']) this.y += this.speed;
+                } else {
+                    if (keys['w']) this.y -= this.speed;
+                    if (keys['s']) this.y += this.speed;
+                }
+
+                // Keep paddle within bounds
+                if (this.y < 0) this.y = 0;
+                if (this.y + this.height > canvasEl.height) this.y = canvasEl.height - this.height;
+            }
+
+            draw() {
+                ctxEl.fillStyle = 'white';
+                ctxEl.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Ball {
+            constructor() {
+                this.reset();
+            }
+
+            reset(servingPlayer = 1) { // servingPlayer 1 for P1, 2 for P2
+                this.x = canvasEl.width / 2;
+                this.y = canvasEl.height / 2;
+                this.radius = BALL_RADIUS;
+                this.speed = INITIAL_BALL_SPEED_X; // Magnitude of speed
+                // Serve towards the player who didn't just score (or randomly for first serve)
+                // If player 1 scored, serve to player 2 (positive dx)
+                // If player 2 scored, serve to player 1 (negative dx)
+                this.dx = (servingPlayer === 1) ? INITIAL_BALL_SPEED_X : -INITIAL_BALL_SPEED_X;
+                this.dy = (Math.random() < 0.5 ? 1 : -1) * (Math.random() * INITIAL_BALL_SPEED_Y/2 + INITIAL_BALL_SPEED_Y/2) ; // Random initial Y direction with some variance
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+
+                // Wall collision (top/bottom)
+                if (this.y - this.radius < 0 || this.y + this.radius > canvasEl.height) {
+                    this.dy *= -1;
+                    if (this.y - this.radius < 0) this.y = this.radius;
+                    if (this.y + this.radius > canvasEl.height) this.y = canvasEl.height - this.radius;
+                }
+
+                // Paddle collision
+                // Player 1 (left)
+                if (this.dx < 0 && 
+                    this.x - this.radius < player1.x + player1.width &&
+                    this.x - this.radius > player1.x && // Check if it's beyond the paddle's front face
+                    this.y > player1.y && this.y < player1.y + player1.height) {
+                    
+                    this.x = player1.x + player1.width + this.radius; // Prevent sticking
+                    this.dx *= -1;
+                    // Optional: Change angle based on where it hits paddle
+                    let deltaY = this.y - (player1.y + player1.height / 2);
+                    this.dy = deltaY * 0.25; // Max 0.25 * PADDLE_HEIGHT/2 = 10
+                    this.dx *= 1.05; // Increase speed slightly
+                    this.dy *= 1.05;
+                }
+
+                // Player 2 (right)
+                if (this.dx > 0 &&
+                    this.x + this.radius > player2.x &&
+                    this.x + this.radius < player2.x + player2.width && // Check if it's beyond the paddle's front face
+                    this.y > player2.y && this.y < player2.y + player2.height) {
+
+                    this.x = player2.x - this.radius; // Prevent sticking
+                    this.dx *= -1;
+                    let deltaY = this.y - (player2.y + player2.height / 2);
+                    this.dy = deltaY * 0.25;
+                    this.dx *= 1.05;
+                    this.dy *= 1.05;
+                }
+
+
+                // Score points
+                if (this.x - this.radius < 0) { // Player 2 scores
+                    player2.score++;
+                    if (player2.score >= WINNING_SCORE) {
+                        gameOver(`Player 2 Wins! ${player1.score} - ${player2.score}`);
+                    } else {
+                        this.reset(2); // Serve to player 2 (who just scored)
+                    }
+                } else if (this.x + this.radius > canvasEl.width) { // Player 1 scores
+                    player1.score++;
+                     if (player1.score >= WINNING_SCORE) {
+                        gameOver(`Player 1 Wins! ${player1.score} - ${player2.score}`);
+                    } else {
+                        this.reset(1); // Serve to player 1 (who just scored)
+                    }
+                }
+            }
+
+            draw() {
+                ctxEl.beginPath();
+                ctxEl.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctxEl.fillStyle = 'white';
+                ctxEl.fill();
+                ctxEl.closePath();
+            }
+        }
+        
+        function drawScores() {
+            ctxEl.fillStyle = 'white';
+            ctxEl.font = '30px "Press Start 2P"';
+            ctxEl.textAlign = 'center';
+            ctxEl.fillText(player1.score, canvasEl.width / 4, 50);
+            ctxEl.fillText(player2.score, canvasEl.width * 3 / 4, 50);
+        }
+
+        function drawCenterLine() {
+            ctxEl.strokeStyle = 'grey';
+            ctxEl.lineWidth = 4;
+            ctxEl.setLineDash([10, 10]); // Dashed line
+            ctxEl.beginPath();
+            ctxEl.moveTo(canvasEl.width / 2, 0);
+            ctxEl.lineTo(canvasEl.width / 2, canvasEl.height);
+            ctxEl.stroke();
+            ctxEl.setLineDash([]); // Reset line dash
+        }
+
+        function drawGame() {
+            // Clear canvas
+            ctxEl.fillStyle = 'black'; 
+            ctxEl.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            
+            drawCenterLine();
+            if (player1) player1.draw();
+            if (player2) player2.draw();
+            if (ball) ball.draw();
+            drawScores();
+        }
+        
+        function handleKeyDown(e) {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key.startsWith("Arrow") || e.key.toLowerCase() === 'w' || e.key.toLowerCase() === 's') {
+                 e.preventDefault(); // Prevent page scroll for game keys
+            }
+        }
+        function handleKeyUp(e) {
+            keys[e.key.toLowerCase()] = false;
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+            if (player1) player1.update();
+            if (player2) player2.update();
+            if (ball) ball.update();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            updateGame();
+            drawGame();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver(message) {
+            gameRunning = false;
+            startMessageEl.innerHTML = message + "<br><small>CLICK TO RESTART</small>";
+            startMessageEl.style.display = 'block';
+            gameContentEl.style.display = 'none';
+        }
+        
+        let gameLoopRequestID;
+
+        function startGame() {
+            if (gameLoopRequestID) cancelAnimationFrame(gameLoopRequestID);
+
+            player1 = new Paddle(20); // Left paddle
+            player2 = new Paddle(canvasEl.width - 20 - PADDLE_WIDTH, true); // Right paddle
+            ball = new Ball();
+            
+            gameRunning = true;
+            startMessageEl.style.display = 'none';
+            gameContentEl.style.display = 'block';
+            canvasEl.focus(); 
+
+            keys = {}; 
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            
+            gameLoopRequestID = requestAnimationFrame(gameLoop);
+        }
+
+        startMessageEl.addEventListener('click', startGame);
+
+        // Initial setup of game area size based on canvas
+        gameAreaContainerEl.style.width = `${canvasEl.width}px`;
+        gameAreaContainerEl.style.height = `${canvasEl.height}px`;
+
+    </script>
+
+</body>
+</html>

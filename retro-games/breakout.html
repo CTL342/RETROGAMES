@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAMES - Breakout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 5em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            font-size: 1.5em;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #CCCCCC;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto;
+            background-color: #FFFFFF;
+            text-align: center; 
+        }
+
+        section {
+            background-color: #F8F8F8;
+            border: 1px solid #DDDDDD;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #000000;
+            border-bottom: 2px solid #EEEEEE;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .game-area {
+            background-color: #000000; 
+            border: 5px solid #333333;
+            width: 600px; /* Breakout game width */
+            height: 500px; /* Breakout game height */
+            margin: 20px auto; 
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        #start-message {
+            cursor: pointer;
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.85); 
+            border: 2px solid #FFFFFF; 
+            color: #FFFFFF; 
+            font-size: 1.5em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10; 
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        @keyframes pulse {
+            from { opacity: 1; }
+            to { opacity: 0.7; }
+        }
+
+        #game-content { 
+            display: none; 
+        }
+
+        #gameCanvas {
+            background-color: #000000; 
+            display: block; 
+        }
+
+        .directions-box {
+            background-color: #F0F0F0;
+            border: 1px solid #BBBBBB;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+            max-width: 600px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .directions-box h3 {
+            color: #000000;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .directions-box ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .directions-box li {
+            margin-bottom: 8px;
+        }
+      
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>RETRO GAMES</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Games</a></li>
+                <li><a href="leaderboards.html">Leaderboards</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="breakout-game"> 
+            <h2>Breakout</h2> 
+            <div class="game-container">
+                <div class="game-area"> 
+                    <div id="start-message">CLICK TO START</div>
+                    <div id="game-content">
+                        <canvas id="gameCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="directions-box">
+                <h3>How to Play:</h3>
+                <ul>
+                    <li><strong>Left Arrow Key:</strong> Move paddle left.</li>
+                    <li><strong>Right Arrow Key:</strong> Move paddle right.</li>
+                    <li>Use the paddle to bounce the ball and break all the bricks.</li>
+                    <li>If the ball goes past your paddle, you lose a life.</li>
+                    <li>Clear all bricks to advance to the next level. The ball gets faster!</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RETRO GAMES. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const startMessageEl = document.getElementById('start-message');
+        const gameContentEl = document.getElementById('game-content');
+        const canvasEl = document.getElementById('gameCanvas');
+        const ctxEl = canvasEl.getContext('2d');
+        
+        // Game constants for Breakout
+        const PADDLE_WIDTH = 125;
+        const PADDLE_HEIGHT = 15;
+        const PADDLE_SPEED = 7;
+        const BALL_RADIUS = 8;
+        const BASE_BALL_SPEED_X = 3; 
+        const BASE_BALL_SPEED_Y = -3; 
+        const BALL_SPEED_INCREMENT_FACTOR = 0.5; 
+        const MAX_BALL_SPEED_FACTOR = 3; 
+
+        const BRICK_ROW_COUNT = 5;
+        const BRICK_COLUMN_COUNT = 8;
+        const BRICK_WIDTH = 100;
+        const BRICK_HEIGHT = 20;
+        const BRICK_PADDING = 5;
+        const BRICK_OFFSET_TOP = 100; // Increased to make space for score/level/lives list
+        const BRICK_OFFSET_LEFT = 30;
+        const INITIAL_LIVES = 3;
+
+        let paddle, ball, bricks = [];
+        let score = 0;
+        let lives = INITIAL_LIVES;
+        let level = 1;
+        let gameRunning = false;
+        let keys = {}; 
+        let bricksRemaining = 0;
+
+        // Set canvas dimensions for Breakout
+        canvasEl.width = BRICK_OFFSET_LEFT * 2 + BRICK_COLUMN_COUNT * (BRICK_WIDTH + BRICK_PADDING) - BRICK_PADDING; 
+        canvasEl.height = 500; 
+
+        // --- Breakout Game Logic ---
+
+        class Paddle {
+            constructor() {
+                this.width = PADDLE_WIDTH;
+                this.height = PADDLE_HEIGHT;
+                this.x = (canvasEl.width - this.width) / 2;
+                this.y = canvasEl.height - this.height - 20; 
+                this.speed = PADDLE_SPEED;
+            }
+
+            update() {
+                if (keys['arrowleft'] && this.x > 0) {
+                    this.x -= this.speed;
+                }
+                if (keys['arrowright'] && this.x + this.width < canvasEl.width) {
+                    this.x += this.speed;
+                }
+            }
+
+            draw() {
+                ctxEl.fillStyle = 'white';
+                ctxEl.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Ball {
+            constructor() {
+                this.reset();
+            }
+
+            reset(forNewLevel = false) {
+                this.x = canvasEl.width / 2;
+                this.y = paddle.y - BALL_RADIUS - 5; 
+                this.radius = BALL_RADIUS;
+                
+                let currentSpeedFactor = 1 + (level - 1) * BALL_SPEED_INCREMENT_FACTOR;
+                currentSpeedFactor = Math.min(currentSpeedFactor, MAX_BALL_SPEED_FACTOR);
+
+                this.dx = BASE_BALL_SPEED_X * currentSpeedFactor * (Math.random() < 0.5 ? 1 : -1); 
+                this.dy = BASE_BALL_SPEED_Y * currentSpeedFactor;
+
+                if (forNewLevel) { 
+                    this.dy = Math.abs(this.dy) * -1; 
+                }
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+
+                // Wall collision (left/right)
+                if (this.x + this.radius > canvasEl.width || this.x - this.radius < 0) {
+                    this.dx *= -1;
+                    if (this.x + this.radius > canvasEl.width) this.x = canvasEl.width - this.radius;
+                    if (this.x - this.radius < 0) this.x = this.radius;
+                }
+                // Wall collision (top)
+                if (this.y - this.radius < 0) {
+                    this.dy *= -1;
+                    this.y = this.radius;
+                }
+
+                // Paddle collision
+                if (this.y + this.radius > paddle.y && 
+                    this.y - this.radius < paddle.y + paddle.height &&
+                    this.x + this.radius > paddle.x && 
+                    this.x - this.radius < paddle.x + paddle.width) {
+                    
+                    this.dy *= -1;
+                    this.y = paddle.y - this.radius; 
+
+                    let hitPos = (this.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2); 
+                    let currentSpeedFactor = 1 + (level - 1) * BALL_SPEED_INCREMENT_FACTOR;
+                    currentSpeedFactor = Math.min(currentSpeedFactor, MAX_BALL_SPEED_FACTOR);
+                    this.dx = hitPos * Math.abs(BASE_BALL_SPEED_X * currentSpeedFactor) * 1.5; 
+                }
+
+                // Ball goes below paddle (lose life)
+                if (this.y + this.radius > canvasEl.height) {
+                    lives--;
+                    if (lives <= 0) {
+                        gameOver("GAME OVER");
+                    } else {
+                        this.reset();
+                        paddle.x = (canvasEl.width - paddle.width) / 2; 
+                    }
+                }
+            }
+
+            draw() {
+                ctxEl.beginPath();
+                ctxEl.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctxEl.fillStyle = 'white';
+                ctxEl.fill();
+                ctxEl.closePath();
+            }
+        }
+
+        class Brick {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.width = BRICK_WIDTH;
+                this.height = BRICK_HEIGHT;
+                this.color = color;
+                this.status = 1; 
+            }
+
+            draw() {
+                if (this.status === 1) {
+                    ctxEl.fillStyle = this.color;
+                    ctxEl.fillRect(this.x, this.y, this.width, this.height);
+                    ctxEl.strokeStyle = '#333'; 
+                    ctxEl.strokeRect(this.x, this.y, this.width, this.height);
+                }
+            }
+        }
+        
+        function createBricks() {
+            bricks = [];
+            bricksRemaining = 0;
+            const colors = ['#FF4136', '#FF851B', '#FFDC00', '#2ECC40', '#0074D9', '#B10DC9']; 
+            for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < BRICK_ROW_COUNT; r++) {
+                    const brickX = BRICK_OFFSET_LEFT + c * (BRICK_WIDTH + BRICK_PADDING);
+                    const brickY = BRICK_OFFSET_TOP + r * (BRICK_HEIGHT + BRICK_PADDING);
+                    const color = colors[(r + level -1) % colors.length]; 
+                    bricks[c][r] = new Brick(brickX, brickY, color);
+                    bricksRemaining++;
+                }
+            }
+        }
+
+        function nextLevel() {
+            level++;
+            createBricks();
+            ball.reset(true); 
+            paddle.x = (canvasEl.width - paddle.width) / 2; 
+        }
+
+        function collisionDetectionBallBrick() {
+            for (let c = 0; c < BRICK_COLUMN_COUNT; c++) {
+                for (let r = 0; r < BRICK_ROW_COUNT; r++) {
+                    const brick = bricks[c][r];
+                    if (brick.status === 1) {
+                        if (ball.x + ball.radius > brick.x && 
+                            ball.x - ball.radius < brick.x + brick.width &&
+                            ball.y + ball.radius > brick.y && 
+                            ball.y - ball.radius < brick.y + brick.height) {
+                            
+                            brick.status = 0;
+                            score += 10 * level; 
+                            bricksRemaining--;
+
+                            const overlapX = (ball.x < brick.x + brick.width / 2) ? 
+                                             (brick.x + brick.width) - (ball.x - ball.radius) : 
+                                             (ball.x + ball.radius) - brick.x;
+                            const overlapY = (ball.y < brick.y + brick.height / 2) ?
+                                             (brick.y + brick.height) - (ball.y - ball.radius) :
+                                             (ball.y + ball.radius) - brick.y;
+
+                            if (overlapX < overlapY && overlapX < (brick.width + ball.radius)) {
+                                ball.dx *= -1;
+                            } else {
+                                ball.dy *= -1;
+                            }
+                            
+                            if (bricksRemaining <= 0) {
+                                nextLevel();
+                            }
+                            return; 
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawScoreAndLives() {
+            ctxEl.fillStyle = 'white';
+            ctxEl.font = '18px "Press Start 2P"';
+            ctxEl.textAlign = 'left'; // Align all to the left for a list
+            
+            const lineSpacing = 25; // Vertical space between lines
+            let currentY = 30; // Starting Y position for the first item
+
+            ctxEl.fillText(`Score: ${score}`, 10, currentY); 
+            currentY += lineSpacing;
+            ctxEl.fillText(`Level: ${level}`, 10, currentY); 
+            currentY += lineSpacing;
+            ctxEl.fillText(`Lives: ${lives}`, 10, currentY); 
+        }
+
+        function drawGame() {
+            ctxEl.fillStyle = 'black'; 
+            ctxEl.fillRect(0, 0, canvasEl.width, canvasEl.height);
+            
+            if (paddle) paddle.draw();
+            if (ball) ball.draw();
+            bricks.forEach(column => column.forEach(brick => brick.draw()));
+            drawScoreAndLives();
+        }
+        
+        function handleKeyDown(e) {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key.startsWith("Arrow")) {
+                 e.preventDefault(); 
+            }
+        }
+        function handleKeyUp(e) {
+            keys[e.key.toLowerCase()] = false;
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+            if (paddle) paddle.update();
+            if (ball) ball.update();
+            collisionDetectionBallBrick();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            updateGame();
+            drawGame();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver(message) {
+            gameRunning = false;
+            startMessageEl.innerHTML = message + "<br><small>CLICK TO RESTART</small>";
+            startMessageEl.style.display = 'block';
+            gameContentEl.style.display = 'none';
+        }
+        
+        let gameLoopRequestID;
+
+        function startGame() {
+            if (gameLoopRequestID) cancelAnimationFrame(gameLoopRequestID);
+
+            score = 0;
+            lives = INITIAL_LIVES;
+            level = 1; 
+            
+            paddle = new Paddle();
+            ball = new Ball(); 
+            createBricks();
+            
+            gameRunning = true;
+            startMessageEl.style.display = 'none';
+            gameContentEl.style.display = 'block';
+            canvasEl.focus(); 
+
+            keys = {}; 
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            
+            gameLoopRequestID = requestAnimationFrame(gameLoop);
+        }
+
+        startMessageEl.addEventListener('click', startGame);
+        
+        const gameAreaEl = document.querySelector('.game-area'); 
+        gameAreaEl.style.width = `${canvasEl.width}px`;
+        gameAreaEl.style.height = `${canvasEl.height}px`;
+
+    </script>
+
+</body>
+</html>

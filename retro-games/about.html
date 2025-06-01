@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETRO GAMES - About Us</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FFFFFF;
+            color: #333333;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 5em;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        nav ul {
+            font-size: 1.5em;
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #CCCCCC;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 960px;
+            margin: 20px auto; /* This still centers the content block */
+            background-color: #FFFFFF;
+            flex-grow: 1; /* Added for sticky footer - main content takes available space */
+            width: 100%; /* Ensure main respects max-width and padding correctly */
+            box-sizing: border-box; /* Good practice with width and padding */
+        }
+
+        section {
+            background-color: #F8F8F8;
+            border: 1px solid #DDDDDD;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-sizing: border-box;
+        }
+
+        section:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            color: #000000;
+            border-bottom: 2px solid #EEEEEE;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #666666;
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: #000000;
+        }
+
+        footer {
+            background-color: #000000;
+            color: #FFFFFF;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>RETRO GAMES</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Games</a></li>
+                <li><a href="leaderboards.html">Leaderboards</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About RETRO GAMES</h2>
+            <p>Welcome to RETRO GAMES, your ultimate destination for classic gaming experiences. Immerse yourself in a world of pixelated nostalgia and timeless fun. We celebrate the golden age of gaming with a curated selection of iconic titles.</p>
+            <p>Our mission is to bring back the joy and simplicity of vintage games. Whether you're revisiting old favorites or discovering them for the first time, prepare for an unforgettable journey down memory lane.</p>
+        </section>
+
+        <section id="contact">
+            <h2>Get in Touch</h2>
+            <p>Have questions about a game or want to suggest a new title? We'd love to hear from you!</p>
+            <p>Email: <a href="mailto:info@retrogames.com">info@retrogames.com</a></p>
+            <p>Follow us for updates on new additions and features.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RETRO GAMES. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
